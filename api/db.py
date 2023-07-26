@@ -22,6 +22,7 @@ def execute_nonquery(sql, params=None):
     except Exception as e:
         exception_msg = getattr(e, 'message', repr(e))
         print(f"Error executing SQL statement: {exception_msg}")
+        raise Exception(exception_msg)
 
 def execute_query(sql, params=None):
     try:
@@ -35,4 +36,5 @@ def execute_query(sql, params=None):
     except Exception as e:
         exception_msg = getattr(e, 'message', repr(e))
         print(f"Error executing SQL statement: {exception_msg}")
+        raise Exception(exception_msg)
 

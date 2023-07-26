@@ -1,16 +1,30 @@
 from flask_restful import Resource, reqparse
 from db import execute_nonquery, execute_query
 from helpers.response_helper import return_bad_request
+from helpers.query_helper import get_insert_query, get_select_all_query, get_select_one_query, get_update_query
+from helpers.format_helper import format_datetime
 
-class FriendResource(Resource):
+class Friend(Resource):
     def __init__(self):
         self.tablename = 'friends'
+        self.columns = [
+            'friend_id',
+            'modify_date',
+            'firstname',
+            'lastname',
+        ]
 
     def get(self, friend_id=None):
         try:
             if friend_id is not None:
-                return self.get_one(friend_id)
-            return self.get_all()
+                result = self.get_one(friend_id)
+                self.format_modify_date(result)
+                return result
+            else:
+                results = self.get_all()
+                for result in results:
+                    self.format_modify_date(result)
+                return results
         except Exception as e:
             return return_bad_request(e)
 
@@ -24,7 +38,8 @@ class FriendResource(Resource):
                 'lastname': args['lastname'],
             }
 
-            sql = f"INSERT INTO {self.tablename}(firstname, lastname) VALUES(%(firstname)s, %(lastname)s)"
+            insert_columns = self.columns[2:]
+            sql = get_insert_query(self.tablename, insert_columns)
             execute_nonquery(sql, new_friend)
 
             return_val = { 'message': 'Successfully created.' }
@@ -43,8 +58,7 @@ class FriendResource(Resource):
                 'lastname': args['lastname'],
             }
             self.check_if_exists(friend_info['friend_id'])
-
-            sql = f"UPDATE {self.tablename} SET firstname=%(firstname)s, lastname=%(lastname)s WHERE friend_id = %(friend_id)s"
+            sql = get_update_query(self.tablename, self.columns[2:], self.columns[0])
             execute_nonquery(sql, friend_info)
 
             return_val = { 'message': 'Successfully updated.' }
@@ -70,14 +84,27 @@ class FriendResource(Resource):
             return return_bad_request(e)
 
     def get_all(self):
-        sql = f"SELECT friend_id, firstname, lastname FROM {self.tablename}"
+        sql = get_select_all_query(self.tablename, self.columns)
+        print(sql)
         results = execute_query(sql)
         return results
 
     def get_one(self, friend_id):
-        sql = f"SELECT friend_id, firstname, lastname FROM {self.tablename} WHERE friend_id = %s"
+        sql = get_select_one_query(self.tablename, self.columns, self.columns[0])
         results = execute_query(sql, [friend_id])
+        if (len(results) == 0):
+            raise Exception("Friend with given ID not found.")
         return results[0]
+
+    def format_modify_date(self, row):
+        if row['modify_date'] is not None:
+            row['modify_date'] = format_datetime(row['modify_date'])
+
+    def check_if_exists(self, friend_id):
+        check_if_exists_sql = f"SELECT 1 FROM {self.tablename} WHERE friend_id = %s"
+        exists_result = execute_query(check_if_exists_sql, [friend_id])
+        if (len(exists_result) == 0):
+            raise Exception("Friend with given ID does not exist.")
 
     def post_parser(self):
         parser = reqparse.RequestParser()
@@ -96,10 +123,4 @@ class FriendResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('friend_id', type=int, required=True, help='Friend ID is required.')
         return parser
-
-    def check_if_exists(self, friend_id):
-        check_if_exists_sql = f"SELECT 1 FROM {self.tablename} WHERE friend_id = %s"
-        exists_result = execute_query(check_if_exists_sql, [friend_id])
-        if (len(exists_result) == 0):
-            raise Exception("Friend with given ID does not exist.")
 
