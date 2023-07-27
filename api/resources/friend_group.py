@@ -4,12 +4,11 @@ from helpers.response_helper import return_bad_request
 from helpers.query_helper import get_insert_query, get_select_all_query, get_select_one_query, get_update_query
 
 class FriendGroup(Resource):
-    def __init__(self):
-        self.tablename = 'friend_groups'
-        self.columns = [
-            'friend_group_id',
-            'name',
-        ]
+    tablename = 'friend_groups'
+    columns = [
+        'friend_group_id',
+        'name',
+    ]
 
     def get(self, friend_group_id=None):
         try:
@@ -28,8 +27,8 @@ class FriendGroup(Resource):
                 'name': args['name'],
             }
 
-            insert_columns = self.columns[1:]
-            sql = get_insert_query(self.tablename, insert_columns)
+            insert_columns = FriendGroup.columns[1:]
+            sql = get_insert_query(FriendGroup.tablename, insert_columns)
             execute_nonquery(sql, new_friend_group)
 
             return_val = { 'message': 'Successfully created.' }
@@ -47,7 +46,7 @@ class FriendGroup(Resource):
                 'name': args['name'],
             }
             self.check_if_exists(friend_group_info['friend_group_id'])
-            sql = get_update_query(self.tablename, self.columns[1:], self.columns[0])
+            sql = get_update_query(FriendGroup.tablename, FriendGroup.columns[1:], FriendGroup.columns[0])
             execute_nonquery(sql, friend_group_info)
 
             return_val = { 'message': 'Successfully updated.' }
@@ -63,7 +62,7 @@ class FriendGroup(Resource):
             friend_group_id = args['friend_group_id']
             self.check_if_exists(friend_group_id)
 
-            delete_sql = f"DELETE FROM {self.tablename} WHERE friend_group_id = %s"
+            delete_sql = f"DELETE FROM {FriendGroup.tablename} WHERE friend_group_id = %s"
             execute_nonquery(delete_sql, [friend_group_id])
 
             return_val = { 'message': 'Successfully deleted.' }
@@ -72,19 +71,19 @@ class FriendGroup(Resource):
             return return_bad_request(e)
 
     def get_all(self):
-        sql = get_select_all_query(self.tablename, self.columns)
+        sql = get_select_all_query(FriendGroup.tablename, FriendGroup.columns)
         results = execute_query(sql)
         return results
 
     def get_one(self, friend_group_id):
-        sql = get_select_one_query(self.tablename, self.columns, self.columns[0])
+        sql = get_select_one_query(FriendGroup.tablename, FriendGroup.columns, FriendGroup.columns[0])
         results = execute_query(sql, [friend_group_id])
         if (len(results) == 0):
             raise Exception("Friend group with given ID not found.")
         return results[0]
 
     def check_if_exists(self, friend_group_id):
-        check_if_exists_sql = f"SELECT 1 FROM {self.tablename} WHERE friend_group_id = %s"
+        check_if_exists_sql = f"SELECT 1 FROM {FriendGroup.tablename} WHERE friend_group_id = %s"
         exists_result = execute_query(check_if_exists_sql, [friend_group_id])
         if (len(exists_result) == 0):
             raise Exception("Friend group with given ID does not exist.")

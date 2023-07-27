@@ -20,6 +20,20 @@ def get_update_query(tablename, columns, filter_col):
     filter_clause = f"{filter_col} = {format_param(filter_col)}"
     return f"UPDATE {tablename} SET {set_column_csv} WHERE {filter_clause}"
 
+def get_friends_in_friend_group_query(friend_columns, friend_tablename, member_tablename):
+    column_csv = CSV_DELIMITER.join([f"f.{x}" for x in friend_columns])
+    params = {
+        'column_csv': column_csv,
+        'friend_table': friend_tablename,
+        'member_table': member_tablename,
+    }
+    return """
+           SELECT {column_csv} FROM {friend_table} f
+           INNER JOIN {member_table} fgm
+           ON f.friend_id = fgm.friend_id
+           WHERE fgm.friend_group_id = %s
+           """.format(**params)
+
 def format_param(column):
     return PARAM_FORMAT.replace(PARAM_PLACEHOLDER, column)
 

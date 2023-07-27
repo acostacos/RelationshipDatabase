@@ -5,14 +5,13 @@ from helpers.query_helper import get_insert_query, get_select_all_query, get_sel
 from helpers.format_helper import format_datetime
 
 class Friend(Resource):
-    def __init__(self):
-        self.tablename = 'friends'
-        self.columns = [
-            'friend_id',
-            'modify_date',
-            'firstname',
-            'lastname',
-        ]
+    tablename = 'friends'
+    columns = [
+        'friend_id',
+        'modify_date',
+        'firstname',
+        'lastname',
+    ]
 
     def get(self, friend_id=None):
         try:
@@ -38,8 +37,8 @@ class Friend(Resource):
                 'lastname': args['lastname'],
             }
 
-            insert_columns = self.columns[2:]
-            sql = get_insert_query(self.tablename, insert_columns)
+            insert_columns = Friend.columns[2:]
+            sql = get_insert_query(Friend.tablename, insert_columns)
             execute_nonquery(sql, new_friend)
 
             return_val = { 'message': 'Successfully created.' }
@@ -58,7 +57,7 @@ class Friend(Resource):
                 'lastname': args['lastname'],
             }
             self.check_if_exists(friend_info['friend_id'])
-            sql = get_update_query(self.tablename, self.columns[2:], self.columns[0])
+            sql = get_update_query(Friend.tablename, Friend.columns[2:], Friend.columns[0])
             execute_nonquery(sql, friend_info)
 
             return_val = { 'message': 'Successfully updated.' }
@@ -75,7 +74,7 @@ class Friend(Resource):
             friend_id = args['friend_id']
             self.check_if_exists(friend_id)
 
-            delete_sql = f"DELETE FROM {self.tablename} WHERE friend_id = %s"
+            delete_sql = f"DELETE FROM {Friend.tablename} WHERE friend_id = %s"
             execute_nonquery(delete_sql, [friend_id])
 
             return_val = { 'message': 'Successfully deleted.' }
@@ -84,13 +83,13 @@ class Friend(Resource):
             return return_bad_request(e)
 
     def get_all(self):
-        sql = get_select_all_query(self.tablename, self.columns)
+        sql = get_select_all_query(Friend.tablename, Friend.columns)
         print(sql)
         results = execute_query(sql)
         return results
 
     def get_one(self, friend_id):
-        sql = get_select_one_query(self.tablename, self.columns, self.columns[0])
+        sql = get_select_one_query(Friend.tablename, Friend.columns, Friend.columns[0])
         results = execute_query(sql, [friend_id])
         if (len(results) == 0):
             raise Exception("Friend with given ID not found.")
@@ -101,7 +100,7 @@ class Friend(Resource):
             row['modify_date'] = format_datetime(row['modify_date'])
 
     def check_if_exists(self, friend_id):
-        check_if_exists_sql = f"SELECT 1 FROM {self.tablename} WHERE friend_id = %s"
+        check_if_exists_sql = f"SELECT 1 FROM {Friend.tablename} WHERE friend_id = %s"
         exists_result = execute_query(check_if_exists_sql, [friend_id])
         if (len(exists_result) == 0):
             raise Exception("Friend with given ID does not exist.")
