@@ -84,7 +84,6 @@ class Friend(Resource):
 
     def get_all(self):
         sql = get_select_all_query(Friend.tablename, Friend.columns)
-        print(sql)
         results = execute_query(sql)
         return results
 
