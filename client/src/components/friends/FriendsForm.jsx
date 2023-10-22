@@ -24,7 +24,17 @@ function FriendsForm({
     onSubmit(formData);
   };
 
-  const { firstname, lastname } = formData;
+  const {
+    firstname,
+    lastname,
+    last_interaction,
+    birthday,
+    work,
+    significant_other,
+    likes,
+    dislikes,
+    notes,
+  } = formData;
   return (
     <div id="FriendsForm">
       <Form>
@@ -48,6 +58,89 @@ function FriendsForm({
                 placeholder="Last name"
                 value={lastname}
                 onChange={(e) => handleFormDataChange(e, 'lastname')}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormGroup className="mb-3" controlId="last_interaction">
+              <FormLabel>Last Interaction</FormLabel>
+              <FormControl
+                type="date"
+                value={last_interaction}
+                onChange={(e) => handleFormDataChange(e, 'last_interaction')}
+              />
+            </FormGroup>
+          </Col>
+          <Col>
+            <FormGroup className="mb-3" controlId="birthday">
+              <FormLabel>Birthday</FormLabel>
+              <FormControl
+                type="date"
+                value={birthday}
+                onChange={(e) => handleFormDataChange(e, 'birthday')}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormGroup className="mb-3" controlId="work">
+              <FormLabel>Work</FormLabel>
+              <FormControl
+                type="text"
+                placeholder="Work"
+                value={work}
+                onChange={(e) => handleFormDataChange(e, 'work')}
+              />
+            </FormGroup>
+          </Col>
+          <Col>
+            <FormGroup className="mb-3" controlId="significant_other">
+              <FormLabel>Significant Other</FormLabel>
+              <FormControl
+                type="text"
+                placeholder="Significant Other"
+                value={significant_other}
+                onChange={(e) => handleFormDataChange(e, 'significant_other')}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormGroup className="mb-3" controlId="likes">
+              <FormLabel>Likes</FormLabel>
+              <FormControl
+                type="text"
+                placeholder="Likes"
+                value={likes}
+                onChange={(e) => handleFormDataChange(e, 'likes')}
+              />
+            </FormGroup>
+          </Col>
+          <Col>
+            <FormGroup className="mb-3" controlId="dislikes">
+              <FormLabel>Dislikes</FormLabel>
+              <FormControl
+                type="text"
+                placeholder="Dislikes"
+                value={dislikes}
+                onChange={(e) => handleFormDataChange(e, 'dislikes')}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormGroup className="mb-3" controlId="notes">
+              <FormLabel>Notes</FormLabel>
+              <FormControl
+                as="textarea"
+                value={notes}
+                rows="10"
+                onChange={(e) => handleFormDataChange(e, 'notes')}
               />
             </FormGroup>
           </Col>

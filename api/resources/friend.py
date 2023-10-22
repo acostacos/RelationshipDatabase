@@ -7,7 +7,7 @@ from helpers.query_helper import (
     get_select_one_query,
     get_update_query
 )
-from helpers.format_helper import format_datetime
+from helpers.format_helper import format_datetime, format_date
 
 class Friend(Resource):
     tablename = 'friends'
@@ -16,18 +16,25 @@ class Friend(Resource):
         'modify_date',
         'firstname',
         'lastname',
+        'birthday',
+        'last_interaction',
+        'work',
+        'significant_other',
+        'likes',
+        'dislikes',
+        'notes',
     ]
 
     def get(self, friend_id=None):
         try:
             if friend_id is not None:
                 result = self.get_one(friend_id)
-                self.format_modify_date(result)
+                self.format_date_properties(result)
                 return result
             else:
                 results = self.get_all()
                 for result in results:
-                    self.format_modify_date(result)
+                    self.format_date_properties(result)
                 return results
         except Exception as e:
             return return_bad_request(e)
@@ -40,6 +47,13 @@ class Friend(Resource):
             new_friend = {
                 'firstname': args['firstname'],
                 'lastname': args['lastname'],
+                'birthday': args['birthday'],
+                'last_interaction': args['last_interaction'],
+                'work': args['work'],
+                'significant_other': args['significant_other'],
+                'likes': args['likes'],
+                'dislikes': args['dislikes'],
+                'notes': args['notes'],
             }
 
             insert_columns = Friend.columns[2:]
@@ -60,6 +74,13 @@ class Friend(Resource):
                 'friend_id': args['friend_id'],
                 'firstname': args['firstname'],
                 'lastname': args['lastname'],
+                'birthday': args['birthday'],
+                'last_interaction': args['last_interaction'],
+                'work': args['work'],
+                'significant_other': args['significant_other'],
+                'likes': args['likes'],
+                'dislikes': args['dislikes'],
+                'notes': args['notes'],
             }
             self.check_if_exists(friend_info['friend_id'])
             sql = get_update_query(Friend.tablename, Friend.columns[2:], Friend.columns[0])
@@ -99,9 +120,10 @@ class Friend(Resource):
             raise Exception("Friend with given ID not found.")
         return results[0]
 
-    def format_modify_date(self, row):
-        if row['modify_date'] is not None:
-            row['modify_date'] = format_datetime(row['modify_date'])
+    def format_date_properties(self, row):
+        row['modify_date'] = format_datetime(row['modify_date'])
+        row['birthday'] = format_date(row['birthday'])
+        row['last_interaction'] = format_date(row['last_interaction'])
 
     def check_if_exists(self, friend_id):
         check_if_exists_sql = f"SELECT 1 FROM {Friend.tablename} WHERE friend_id = %s"
@@ -113,6 +135,13 @@ class Friend(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('firstname', type=str, required=True, help='Firstname is required.')
         parser.add_argument('lastname', type=str, required=True, help='Lastname is required.')
+        parser.add_argument('birthday')
+        parser.add_argument('last_interaction')
+        parser.add_argument('work', type=str)
+        parser.add_argument('significant_other', type=str)
+        parser.add_argument('likes', type=str)
+        parser.add_argument('dislikes', type=str)
+        parser.add_argument('notes', type=str)
         return parser
 
     def put_parser(self):
@@ -120,6 +149,13 @@ class Friend(Resource):
         parser.add_argument('friend_id', type=str, required=True, help='Friend ID is required.')
         parser.add_argument('firstname', type=str, required=True, help='Firstname is required.')
         parser.add_argument('lastname', type=str, required=True, help='Lastname is required.')
+        parser.add_argument('birthday')
+        parser.add_argument('last_interaction')
+        parser.add_argument('work', type=str)
+        parser.add_argument('significant_other', type=str)
+        parser.add_argument('likes', type=str)
+        parser.add_argument('dislikes', type=str)
+        parser.add_argument('notes', type=str)
         return parser
 
     def delete_parser(self):

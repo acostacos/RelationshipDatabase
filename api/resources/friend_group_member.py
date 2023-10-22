@@ -19,21 +19,20 @@ class FriendGroupMember(Resource):
             sql = ""
             if args['not_in']:
                 sql = get_friends_not_in_friend_group_query(
-                    Friend.columns,
+                    Friend.columns[:4],
                     Friend.tablename,
                     FriendGroupMember.tablename
                 )
             else:
                 sql = get_friends_in_friend_group_query(
-                    Friend.columns,
+                    Friend.columns[:4],
                     Friend.tablename,
                     FriendGroupMember.tablename
                 )
             results = execute_query(sql, [friend_group_id])
 
             for row in results:
-                if row['modify_date'] is not None:
-                    row['modify_date'] = format_datetime(row['modify_date'])
+                row['modify_date'] = format_datetime(row['modify_date'])
 
             return results
         except Exception as e:

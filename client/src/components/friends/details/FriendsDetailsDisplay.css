@@ -1,0 +1,9 @@
+#FriendsDetailsDisplay {
+    .info-row {
+        margin-top: 1.5rem;
+
+        .notes-content {
+            white-space: pre-line;
+        }
+    }
+}

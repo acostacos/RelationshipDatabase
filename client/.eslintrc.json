@@ -12,6 +12,7 @@
         "linebreak-style": "off",
         "import/no-extraneous-dependencies": "off",
         "no-useless-return": "off",
-        "jsx-a11y/anchor-is-valid": "off"
+        "jsx-a11y/anchor-is-valid": "off",
+        "camelcase": "off"
     }
 }
