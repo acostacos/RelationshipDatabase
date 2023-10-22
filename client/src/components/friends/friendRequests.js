@@ -18,7 +18,7 @@ export async function createFriend(friendData) {
   };
 
   const response = await axios.post(friendUrl, body);
-  return response.message;
+  return response.data;
 }
 
 export async function editFriend(friendData) {

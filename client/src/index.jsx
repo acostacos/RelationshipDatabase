@@ -5,7 +5,12 @@ import { RouterProvider } from 'react-router-dom';
 import router from './router';
 import reportWebVitals from './reportWebVitals';
 
-const client = new QueryClient();
+const client = new QueryClient({
+  defaultOptions: {
+    staleTime: 1000 * 60, // 60 seconds
+    refetchOnWindowFocus: false,
+  },
+});
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

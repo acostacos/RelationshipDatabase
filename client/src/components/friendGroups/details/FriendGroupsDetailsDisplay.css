@@ -1,0 +1,13 @@
+#FriendGroupsDetailsDisplay {
+    .friend-group-member-card-group {
+        margin-top: 50px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
+
+        .friend-group-member-card {
+            width: 18rem;
+        }
+    }
+}

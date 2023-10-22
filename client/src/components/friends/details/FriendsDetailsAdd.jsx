@@ -13,10 +13,13 @@ function FriendsDetailsAdd() {
     mutate: createFriendMut,
   } = useMutation({
     mutationFn: createFriend,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(['friends']);
-      navigate('..', { relative: 'path' });
-      // TODO: On Create, return friend id and then load friendid page
+      if (data && data.friend_id) {
+        navigate(`../${data.friend_id}`, { relative: 'path' });
+      } else {
+        navigate('..', { relative: 'path' });
+      }
     },
   });
 

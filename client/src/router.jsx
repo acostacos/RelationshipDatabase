@@ -7,6 +7,11 @@ import FriendsDetailsPage from './components/friends/details/FriendsDetailsPage'
 import FriendsDetailsDisplay from './components/friends/details/FriendsDetailsDisplay';
 import FriendsDetailsEdit from './components/friends/details/FriendsDetailsEdit';
 import FriendsDetailsAdd from './components/friends/details/FriendsDetailsAdd';
+import FriendGroupsListPage from './components/friendGroups/list/FriendGroupsListPage';
+import FriendGroupsDetailsPage from './components/friendGroups/details/FriendGroupsDetailsPage';
+import FriendGroupsDetailsDisplay from './components/friendGroups/details/FriendGroupsDetailsDisplay';
+import FriendGroupsDetailsEdit from './components/friendGroups/details/FriendGroupsDetailsEdit';
+import FriendGroupsDetailsAdd from './components/friendGroups/details/FriendGroupsDetailsAdd';
 
 const router = createBrowserRouter([
   {
@@ -37,6 +42,28 @@ const router = createBrowserRouter([
           {
             path: 'edit',
             element: <FriendsDetailsEdit />,
+          },
+        ],
+      },
+      {
+        path: 'groups',
+        element: <FriendGroupsListPage />,
+      },
+      {
+        path: 'groups/new',
+        element: <FriendGroupsDetailsAdd />,
+      },
+      {
+        path: 'groups/:friendGroupId',
+        element: <FriendGroupsDetailsPage />,
+        children: [
+          {
+            path: '',
+            element: <FriendGroupsDetailsDisplay />,
+          },
+          {
+            path: 'edit',
+            element: <FriendGroupsDetailsEdit />,
           },
         ],
       },

@@ -19,7 +19,7 @@ function Navbar() {
         <BNavbar.Brand>Relationship Database</BNavbar.Brand>
         <Nav className="me-auto">
           <BNavbar.Text className="nav-link"><Link linkTo="friends">Friends</Link></BNavbar.Text>
-          <BNavbar.Text className="nav-link"><Link linkTo="friend_groups">Friend Groups</Link></BNavbar.Text>
+          <BNavbar.Text className="nav-link"><Link linkTo="groups">Friend Groups</Link></BNavbar.Text>
         </Nav>
       </Container>
     </BNavbar>

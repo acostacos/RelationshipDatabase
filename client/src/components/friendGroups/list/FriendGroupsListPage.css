@@ -1,9 +1,9 @@
-#FriendsListPage {
-    .add-friend-button {
+#FriendGroupsListPage {
+    .add-friend-group-button {
         margin-bottom: 20px;
     }
 
-    .friends-list-group {
+    .friend-groups-list-group {
         max-height: 70vh;
         overflow-y: auto;
     }
