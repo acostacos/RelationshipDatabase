@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from db import execute_nonquery, execute_query
 from helpers.response_helper import return_bad_request
 from helpers.query_helper import (
-    get_insert_query,
+    get_insert_query_w_id,
     get_select_all_query,
     get_select_one_query,
     get_update_query
@@ -33,10 +33,10 @@ class FriendGroup(Resource):
             }
 
             insert_columns = FriendGroup.columns[1:]
-            sql = get_insert_query(FriendGroup.tablename, insert_columns)
-            execute_nonquery(sql, new_friend_group)
+            sql = get_insert_query_w_id(FriendGroup.tablename, insert_columns, FriendGroup.columns[0])
+            result = execute_query(sql, new_friend_group)
 
-            return_val = { 'message': 'Successfully created.' }
+            return_val = { 'message': 'Successfully created.' } | result[0]
             return return_val, 201
         except Exception as e:
             return return_bad_request(e)
