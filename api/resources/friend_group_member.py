@@ -32,7 +32,7 @@ class FriendGroupMember(Resource):
         try:
             params = self.get_params(args)
             exists_result = self.check_if_exists(params)
-            if (len(exists_result) > 0):
+            if len(exists_result) > 0:
                 raise Exception("Friend is already included in friend group.")
 
             sql = f"INSERT INTO {FriendGroupMember.tablename}(friend_group_id, friend_id) VALUES(%(friend_group_id)s, %(friend_id)s)"
@@ -50,7 +50,7 @@ class FriendGroupMember(Resource):
         try:
             params = self.get_params(args)
             exists_result = self.check_if_exists(params)
-            if (len(exists_result) == 0):
+            if len(exists_result) == 0:
                 raise Exception("Friend has not been added to friend group.")
 
             sql = f"DELETE FROM {FriendGroupMember.tablename} WHERE friend_group_id=%(friend_group_id)s AND friend_id=%(friend_id)s"
@@ -76,4 +76,3 @@ class FriendGroupMember(Resource):
     def check_if_exists(self, params):
         check_if_exists_sql = f"SELECT 1 FROM {FriendGroupMember.tablename} WHERE friend_group_id = %(friend_group_id)s AND friend_id = %(friend_id)s"
         return execute_query(check_if_exists_sql, params)
-

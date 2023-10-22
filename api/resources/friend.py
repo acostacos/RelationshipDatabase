@@ -1,7 +1,12 @@
 from flask_restful import Resource, reqparse
 from db import execute_nonquery, execute_query
 from helpers.response_helper import return_bad_request
-from helpers.query_helper import get_insert_query, get_select_all_query, get_select_one_query, get_update_query
+from helpers.query_helper import (
+    get_insert_query,
+    get_select_all_query,
+    get_select_one_query,
+    get_update_query
+)
 from helpers.format_helper import format_datetime
 
 class Friend(Resource):
@@ -90,7 +95,7 @@ class Friend(Resource):
     def get_one(self, friend_id):
         sql = get_select_one_query(Friend.tablename, Friend.columns, Friend.columns[0])
         results = execute_query(sql, [friend_id])
-        if (len(results) == 0):
+        if len(results) == 0:
             raise Exception("Friend with given ID not found.")
         return results[0]
 
@@ -101,7 +106,7 @@ class Friend(Resource):
     def check_if_exists(self, friend_id):
         check_if_exists_sql = f"SELECT 1 FROM {Friend.tablename} WHERE friend_id = %s"
         exists_result = execute_query(check_if_exists_sql, [friend_id])
-        if (len(exists_result) == 0):
+        if len(exists_result) == 0:
             raise Exception("Friend with given ID does not exist.")
 
     def post_parser(self):
@@ -121,4 +126,3 @@ class Friend(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('friend_id', type=int, required=True, help='Friend ID is required.')
         return parser
-

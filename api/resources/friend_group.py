@@ -1,7 +1,12 @@
 from flask_restful import Resource, reqparse
 from db import execute_nonquery, execute_query
 from helpers.response_helper import return_bad_request
-from helpers.query_helper import get_insert_query, get_select_all_query, get_select_one_query, get_update_query
+from helpers.query_helper import (
+    get_insert_query,
+    get_select_all_query,
+    get_select_one_query,
+    get_update_query
+)
 
 class FriendGroup(Resource):
     tablename = 'friend_groups'
@@ -78,14 +83,14 @@ class FriendGroup(Resource):
     def get_one(self, friend_group_id):
         sql = get_select_one_query(FriendGroup.tablename, FriendGroup.columns, FriendGroup.columns[0])
         results = execute_query(sql, [friend_group_id])
-        if (len(results) == 0):
+        if len(results) == 0:
             raise Exception("Friend group with given ID not found.")
         return results[0]
 
     def check_if_exists(self, friend_group_id):
         check_if_exists_sql = f"SELECT 1 FROM {FriendGroup.tablename} WHERE friend_group_id = %s"
         exists_result = execute_query(check_if_exists_sql, [friend_group_id])
-        if (len(exists_result) == 0):
+        if len(exists_result) == 0:
             raise Exception("Friend group with given ID does not exist.")
 
     def post_parser(self):
@@ -103,4 +108,3 @@ class FriendGroup(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('friend_group_id', type=int, required=True, help='Friend group ID is required.')
         return parser
-
