@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Button,
@@ -12,8 +12,10 @@ import Link from '../../shared/link/Link';
 import './FriendsListPage.css';
 
 function FriendsListPage() {
+  const [searchVal, setSearchVal] = useState('');
   const navigate = useNavigate();
   const {
+    refetch,
     isSuccess,
     isLoading,
     isError,
@@ -21,11 +23,20 @@ function FriendsListPage() {
     data: friends,
   } = useQuery({
     queryKey: ['friends'],
-    queryFn: () => getFriends(),
+    queryFn: () => getFriends(null, searchVal),
   });
+
+  useEffect(() => {
+    refetch();
+  }, [searchVal]);
 
   const onClickAddFriend = () => {
     navigate('new');
+  };
+
+  const onSearchChange = (e) => {
+    const { value } = e.target;
+    setSearchVal(value);
   };
 
   return (
@@ -37,6 +48,14 @@ function FriendsListPage() {
       {isSuccess && (
         <Container>
           <Button className="add-friend-button" variant="outline-primary" onClick={onClickAddFriend}>Add New Friend</Button>
+          <div className="search">
+            <input
+              type="text"
+              className="searchbar"
+              value={searchVal}
+              onChange={onSearchChange}
+            />
+          </div>
           <ListGroup as="ul" className="friends-list-group">
             {friends && friends.map((friend) => {
               const { friend_id: friendId, firstname, lastname } = friend;

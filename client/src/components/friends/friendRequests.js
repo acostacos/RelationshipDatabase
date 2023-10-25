@@ -2,10 +2,13 @@ import axios from 'axios';
 
 const baseUrl = 'http://127.0.0.1:5000';
 const friendUrl = `${baseUrl}/friend`;
-export async function getFriends(friendId = null) {
+export async function getFriends(friendId = null, search = '') {
   let url = friendUrl;
   if (friendId != null) {
     url += `/${friendId}`;
+  }
+  if (search) {
+    url += `?search=${search}`;
   }
 
   const response = await axios.get(url);

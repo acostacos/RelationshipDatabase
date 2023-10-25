@@ -26,13 +26,18 @@ class Friend(Resource):
     ]
 
     def get(self, friend_id=None):
+        parser = self.get_parser()
+        args = parser.parse_args()
+
         try:
+            search = args['search']
+
             if friend_id is not None:
                 result = self.get_one(friend_id)
                 self.format_date_properties(result)
                 return result
             else:
-                results = self.get_all()
+                results = self.get_all(search)
                 for result in results:
                     self.format_date_properties(result)
                 return results
@@ -108,8 +113,10 @@ class Friend(Resource):
         except Exception as e:
             return return_bad_request(e)
 
-    def get_all(self):
+    def get_all(self, search):
         sql = get_select_all_query(Friend.tablename, Friend.columns)
+        if search is not None:
+            sql += f" WHERE concat_ws(' ', firstname, lastname) LIKE '%{search}%'"
         results = execute_query(sql)
         return results
 
@@ -130,6 +137,11 @@ class Friend(Resource):
         exists_result = execute_query(check_if_exists_sql, [friend_id])
         if len(exists_result) == 0:
             raise Exception("Friend with given ID does not exist.")
+
+    def get_parser(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('search', type=str, location='args')
+        return parser
 
     def post_parser(self):
         parser = reqparse.RequestParser()

@@ -1,5 +1,9 @@
 #FriendsListPage {
     .add-friend-button {
+        margin-bottom: 10px;
+    }
+
+    .search {
         margin-bottom: 20px;
     }
 
